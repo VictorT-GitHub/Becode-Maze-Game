@@ -1,0 +1,45 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: rgb(95, 95, 95);
+  width: 100vw;
+  height: 100vh;
+}
+
+main {
+  display: grid;
+  grid-template: repeat(12, 50px) / repeat(13, 50px);
+  /* gap: 1px; */
+}
+
+.wall,
+.path,
+.T,
+.S {
+  border: solid 1px rgb(95, 95, 95);
+}
+
+.wall {
+  background: rgb(17, 17, 17);
+}
+.path {
+  background: rgb(120, 240, 120);
+}
+.T {
+  background: rgb(240, 172, 47);
+}
+.S {
+  background: lightseagreen;
+}
+.player {
+  height: 48px;
+  width: 48px;
+  border-radius: 100%;
+
+  background: red;
+  position: absolute;
+}
