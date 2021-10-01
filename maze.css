@@ -47,10 +47,9 @@ main {
 
   background: linear-gradient(
     135deg,
-    rgba(237, 103, 22, 0.88),
-    rgba(91, 14, 94, 0.88)
+    rgba(237, 103, 22, 0.92),
+    rgba(91, 14, 94, 0.93)
   );
-  filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.9));
 }
 
 .wall,
