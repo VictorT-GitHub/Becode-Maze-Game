@@ -8,6 +8,7 @@
 body {
   overflow: hidden;
   background-image: url(images/galaxybackground.jpg);
+  background-size: cover;
 
   width: 100vw;
   height: 100vh;
@@ -47,7 +48,7 @@ button {
 }
 button:hover {
   filter: brightness(1.4);
-  scale: 1.05;
+  transform: scale(1.05);
 }
 /* hide the button with toggle js */
 .disabled {
