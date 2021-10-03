@@ -50,13 +50,15 @@ function timer() {
         affichageTens.innerHTML = `0${tens}`;
 
         clearInterval(stockInterval);
-        
+
         clearInterval(intervalStocked);
 
         endGamePopUp("GAME OVER",
             `you failed level ${levelNumber + 1}`,
             `do you try again ?`,
             `try again`);
+        
+        document.querySelector('.player').remove();
     }
 }
 
