@@ -96,18 +96,26 @@ function levelGenerator(currentLevel) {
 
         // ------- Win Event(Condition) --------
         if (player1.parentElement.getAttribute('id') === document.querySelector('.T').getAttribute('id')) {
+
+            clearInterval(stockInterval);
+            clearInterval(intervalStocked);
             
             if (levelNumber === (LEVEL_LIST.length - 1)) {
                 removePopUp();
-                creationVictoryPopUp();
-
+                endGamePopUp("VICTORY ! (Fin de la demo du jeu)",
+                    `well done you passed level ${levelNumber} in ${14 - seconds}:${99 - tens} seconds`,
+                    `you completed the whole game in ${totalSeconds}:${totalTens} seconds`,
+                    `play again`);
+                
             } else {
                 removePopUp();
                 creationWinPopUp();
             }
+            
         }
     })
 }
+
 
 //  ----- FUNCTION REMOVE POPUP : remove all <div> -----
 function removePopUp() {
@@ -115,6 +123,7 @@ function removePopUp() {
         elem.remove();
     }
 }
+
 
 // ----- FUNCTION EXIT LEVEL : remove popUp + player + tiles + <main> -----
 function exitLevel() {
@@ -125,6 +134,7 @@ function exitLevel() {
 
     removePopUp();
 }
+
 
 // -------------------------------------
 //           START GAME BUTTON
@@ -137,7 +147,7 @@ const aside = document.createElement('aside');
 const playBtn = document.createElement('button');
 playBtn.innerHTML = "JOUER";
 
-aside.appendChild(playBtn)
+aside.appendChild(playBtn);
 document.body.insertBefore(aside, document.body.children[0]);
 
 
@@ -145,25 +155,30 @@ document.body.insertBefore(aside, document.body.children[0]);
 playBtn.addEventListener('click', () => {
     
     playBtn.classList.toggle('disabled');
+    clock.classList.toggle('disabled');
     
     // Reset [levelNumber] before start new game
     levelNumber = 0;
-    
     levelGenerator(LEVEL_LIST[levelNumber]);
+ 
+    resetGameTimer();
+    startGameTimer();
+
+    startTimerLevel();
 });
 
 
 // -------------------------------------------
 //            function WIN POPUP
 // -------------------------------------------
-function creationWinPopUp(){
+function creationWinPopUp() {
     // Creation text du popup 
     const divWinText = document.createElement('div');
 
         const winTextTime = document.createElement('p');
         const winText = document.createElement('p');
-        winTextTime.innerHTML = `well done you passed level ${levelNumber + 1} in x seconds`
-        winText.innerHTML = `ready for level ${levelNumber + 2} ?`
+        winTextTime.innerHTML = `well done you passed level ${levelNumber + 1} in ${14 - seconds}:${99 - tens} seconds`;
+        winText.innerHTML = `ready for level ${levelNumber + 2} ?`;
 
     divWinText.appendChild(winTextTime);
     divWinText.appendChild(winText);
@@ -173,22 +188,26 @@ function creationWinPopUp(){
     divWinBtns.classList.add('winBtns');
 
         const winBtnNo = document.createElement('button');
-        winBtnNo.innerHTML = `not today`
+        winBtnNo.innerHTML = `not today`;
         winBtnNo.addEventListener('click', () => {
 
             exitLevel();
 
+            clock.classList.toggle('disabled');
             playBtn.classList.toggle('disabled');
         })
 
         const winBtnYes = document.createElement('button');
-        winBtnYes.innerHTML = `YES !`
+        winBtnYes.innerHTML = `YES !`;
         winBtnYes.addEventListener('click', () => {
 
             exitLevel();
 
             levelNumber++;
             levelGenerator(LEVEL_LIST[levelNumber]);
+
+            startTimerLevel();
+            startGameTimer();
         })
 
     divWinBtns.appendChild(winBtnNo);
@@ -204,20 +223,21 @@ function creationWinPopUp(){
 
 
 // ------------------------------------------
-//          function VICTORY POPUP
+//          function ENDGAME POPUP
 // ------------------------------------------
-function creationVictoryPopUp(){
+function endGamePopUp(a, b, c, d){
+
     // Creation text du popup 
     const divVictoryText = document.createElement('div');
 
         const victoryText = document.createElement('p');
-        victoryText.innerHTML = "VICTORY ! (Fin de la demo du jeu)"
+        victoryText.innerHTML = a;
 
         const victoryTextTime = document.createElement('p');
-        victoryTextTime.innerHTML = `well done you passed level ${levelNumber} in x seconds`
+        victoryTextTime.innerHTML = b;
         
         const victoryTextTimeGame = document.createElement('p');
-        victoryTextTimeGame.innerHTML = `you completed the whole game  in x seconds`
+        victoryTextTimeGame.innerHTML = c;
 
     divVictoryText.appendChild(victoryText);
     divVictoryText.appendChild(victoryTextTime);
@@ -228,16 +248,17 @@ function creationVictoryPopUp(){
     divVictoryBtns.classList.add('winBtns');
 
         const victoryBtnNo = document.createElement('button');
-        victoryBtnNo.innerHTML = `exit game`
+        victoryBtnNo.innerHTML = `exit game`;
         victoryBtnNo.addEventListener('click', () => {
 
             exitLevel();
 
+            clock.classList.toggle('disabled');
             playBtn.classList.toggle('disabled');
         })
 
         const victoryBtnYes = document.createElement('button');
-        victoryBtnYes.innerHTML = `play again`
+        victoryBtnYes.innerHTML = d;
         victoryBtnYes.addEventListener('click', () => {
 
             exitLevel();
@@ -245,6 +266,11 @@ function creationVictoryPopUp(){
             // Reset [levelNumber] before start new game
             levelNumber = 0;
             levelGenerator(LEVEL_LIST[levelNumber]);
+
+            resetGameTimer();
+            startGameTimer();
+
+            startTimerLevel();
         })
 
     divVictoryBtns.appendChild(victoryBtnNo);

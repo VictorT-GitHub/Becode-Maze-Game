@@ -17,6 +17,26 @@ body {
   justify-content: center;
 }
 
+/* hide start-btn and clock with toggle js */
+.disabled {
+  width: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------------ */
+/*          SABLIER - TIMMING           */
+/* ------------------------------------ */
+.clock {
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translate(-50%, -50%);
+
+  color: whitesmoke;
+  font-size: 60px;
+  font-weight: 700;
+}
+
 /* ------------------------------------ */
 /*          BUTTON START GAME           */
 /* ------------------------------------ */
@@ -49,11 +69,6 @@ button {
 button:hover {
   filter: brightness(1.4);
   transform: scale(1.05);
-}
-/* hide the button with toggle js */
-.disabled {
-  width: 0;
-  overflow: hidden;
 }
 
 /* ------------------------------------------------ */
@@ -116,9 +131,9 @@ main {
   transform: scaleX(-1); /* Retourne l'image */
 }
 
-/* ----------------------- */
-/*        winPopUp         */
-/* ----------------------- */
+/* ---------------------------------------- */
+/*          WIN and VICTORY POPUPS          */
+/* ---------------------------------------- */
 .winPopUp {
   z-index: 2;
 
