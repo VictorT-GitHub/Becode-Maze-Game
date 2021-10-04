@@ -1,7 +1,7 @@
-let affichageTens = document.createElement('span');
-let affichageEspace = document.createElement('span');
-    affichageEspace.innerHTML = ":";
 let affichageSeconds = document.createElement('span');
+let affichageEspace = document.createElement('span');
+affichageEspace.innerHTML = ":";
+let affichageTens = document.createElement('span');
 
 let clock = document.createElement('p');
     clock.classList.add('clock');
@@ -9,7 +9,6 @@ let clock = document.createElement('p');
     clock.appendChild(affichageSeconds);
     clock.appendChild(affichageEspace);
     clock.appendChild(affichageTens);
-document.body.appendChild(clock);
 
 
 let seconds = 15;
@@ -17,7 +16,12 @@ let tens = 0;
 affichageSeconds.innerHTML = seconds;
 affichageTens.innerHTML = `0${tens}`;
 
-let stockInterval; 
+let intervalTimeLevel; 
+
+
+// ------------------------------
+//           FUNCTIONS
+// ------------------------------
 
 function timer() {
 
@@ -44,19 +48,23 @@ function timer() {
 
     tens--;
 
+    // OUT OF TIME : GAME OVER CASE
     if (seconds == 0) {
 
         tens = 0;
         affichageTens.innerHTML = `0${tens}`;
 
-        clearInterval(stockInterval);
+        clearInterval(intervalTimeLevel);
 
-        clearInterval(intervalStocked);
+        clearInterval(intervalTimeGame);
 
-        endGamePopUp("GAME OVER",
+        gamePopUp("GAME OVER",
             `you failed level ${levelNumber + 1}`,
             `do you try again ?`,
-            `try again`);
+            `exit game`,
+            `try again`,
+            0,
+            resetGameTimer());
         
         document.querySelector('.player').remove();
     }
@@ -71,5 +79,5 @@ function startTimerLevel() {
     affichageTens.innerHTML = `0${tens}`;
 
     // Start timming (when level start)
-    stockInterval = setInterval(timer, 10);
+    intervalTimeLevel = setInterval(timer, 10);
 }

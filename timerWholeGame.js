@@ -1,8 +1,11 @@
 let totalSeconds = 0;
 let totalTens = 0;
 
-let intervalStocked;
+let intervalTimeGame;
 
+// ------------------------------
+//           FUNCTIONS
+// ------------------------------
 function timerWholeGame() {
 
     totalTens++;
@@ -16,7 +19,7 @@ function timerWholeGame() {
 }
 
 function startGameTimer() {
-    intervalStocked = setInterval(timerWholeGame, 10);
+    intervalTimeGame = setInterval(timerWholeGame, 10);
 }
 
 function resetGameTimer() {

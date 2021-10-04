@@ -1,33 +1,51 @@
-// ----------------------
-//        Variables
-// ----------------------
+// Creation <main>
+const leMain = document.querySelector('main');
+
+// Creation <aside>
+const aside = document.createElement('aside');
+
+// Creation <playButton>
+const playBtn = document.createElement('button');
+playBtn.innerHTML = "JOUER";
+
+// Deplacement playBtn + clock dans <aside>
+aside.appendChild(playBtn);
+aside.appendChild(clock);
+
+// Deplacement <aside> dans <body>
+document.body.insertBefore(aside, document.body.children[0]);
+
+
+// levels list 
+const LEVELS_LIST = [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5];
+
+// Set current level number for get him in the [LEVELS_LIST] array
 let levelNumber = 0;
 
 
-// ---------------------------
-//          FUNCTIONS
-// ---------------------------
-function levelGenerator(currentLevel) {
-    
-    // Creation <main> in the <body> just after the <aside>
-    let leMain = document.createElement('main');
-    document.body.insertBefore(leMain, document.body.children[1]);
+// ------------------------------------------
+//                 FUNCTIONS
+// ------------------------------------------
 
+// FUNCTION LEVEL GENERATOR : - Genere un level(tileset) precis dans le <main>
+//                            - Genere le player dans starting tile
+//                            - Event KeyDown : Switch touches mouvement player + Win Condition
+function levelGenerator() {
     
     // ------ MODIFICATION VARIABLES CSS (GRID) --------
-    leMain.style.setProperty('--nbrRows', `repeat(${currentLevel.length}, 60px)`);
-    leMain.style.setProperty('--nbrColumns', `repeat(${currentLevel[0].length}, 60px)`);
+    leMain.style.setProperty('--nbrRows', `repeat(${LEVELS_LIST[levelNumber].length}, 60px)`);
+    leMain.style.setProperty('--nbrColumns', `repeat(${LEVELS_LIST[levelNumber][0].length}, 60px)`);
     
-    // ------- LEVEL CREATION -------
-    let i = 1;
-    for (let arr of currentLevel) {
+    // ------- TILESET CREATION -------
+    let indexID = 1;
+    for (let arr of LEVELS_LIST[levelNumber]) {
         
         for (let elem of arr) {
             
             let newSquare = document.createElement('section');
             
             newSquare.classList.add(elem);
-            newSquare.setAttribute('id', i);
+            newSquare.setAttribute('id', indexID);
             
             if (elem === "*") { newSquare.classList.add("wall") }
             
@@ -35,8 +53,9 @@ function levelGenerator(currentLevel) {
             
             leMain.appendChild(newSquare);
             
-            i++;
-        }}
+            indexID++;
+        }
+    }
         
         // ------- PLAYER CREATION -------
         let startPos = document.querySelector('.S');
@@ -48,13 +67,13 @@ function levelGenerator(currentLevel) {
         startPos.appendChild(player1);
         
         
-    // ------ KEYPRESS EVENT -------
+    // ------ KEYDOWN EVENT -------
     document.addEventListener('keydown', (e) => { 
         
         // Get ID of de current square -> transform this string into a number -> add the number of column in the maze-grid for target the next row in the grid
         let squareIdNumber = Number(player1.parentElement.getAttribute('id'));
-        let squareUpId = squareIdNumber - currentLevel[0].length;
-        let squareDownId = squareIdNumber + currentLevel[0].length;
+        let squareUpId = squareIdNumber - LEVELS_LIST[levelNumber][0].length;
+        let squareDownId = squareIdNumber + LEVELS_LIST[levelNumber][0].length;
 
         switch (e.key) {
             
@@ -97,19 +116,28 @@ function levelGenerator(currentLevel) {
         // ------- Win Event(Condition) --------
         if (player1.parentElement.getAttribute('id') === document.querySelector('.T').getAttribute('id')) {
 
-            clearInterval(stockInterval);
-            clearInterval(intervalStocked);
+            clearInterval(intervalTimeLevel);
             
-            if (levelNumber === (LEVEL_LIST.length - 1)) {
-                removePopUp();
-                endGamePopUp("VICTORY ! (Fin de la demo du jeu)",
-                    `well done you passed level ${levelNumber} in ${14 - seconds}:${99 - tens} seconds`,
+            clearInterval(intervalTimeGame);
+
+            removePopUp();
+            
+            if (levelNumber === (LEVELS_LIST.length - 1)) {
+                gamePopUp("VICTORY ! (Fin de la demo du jeu)",
+                    `well done you passed level ${levelNumber + 1} in ${14 - seconds}:${99 - tens} seconds`,
                     `you completed the whole game in ${totalSeconds}:${totalTens} seconds`,
-                    `play again`);
+                    `exit game`,
+                    `play again`,
+                    0,
+                    resetGameTimer());
                 
             } else {
-                removePopUp();
-                creationWinPopUp();
+                gamePopUp(`well done you passed level ${levelNumber + 1} in ${14 - seconds}:${99 - tens} seconds`,
+                "",
+                `ready for level ${levelNumber + 2} ?`,
+                `not today`,
+                `YES !`,
+                levelNumber + 1);
             }
             
         }
@@ -130,156 +158,94 @@ function exitLevel() {
     for (let section of document.querySelectorAll('section')) {
         section.remove();
     }
-    document.body.children[1].remove(); // Remove le <main>
 
     removePopUp();
 }
 
 
-// -------------------------------------
-//           START GAME BUTTON
-// -------------------------------------
+// ------------------------------------
+//        function GAME POPUP
+// ------------------------------------
+function gamePopUp(a, b, c, d, e, f, g) {
 
-// Creation <aside> in the <body>
-// Creation <playButton> in the <aside>
-const aside = document.createElement('aside');
+    // Creation text du popup 
+    const popupDivText = document.createElement('div');
 
-const playBtn = document.createElement('button');
-playBtn.innerHTML = "JOUER";
+        const popUpText1 = document.createElement('p');
+        popUpText1.innerHTML = a;
 
-aside.appendChild(playBtn);
-document.body.insertBefore(aside, document.body.children[0]);
+        const popUpText2 = document.createElement('p');
+        popUpText2.innerHTML = b;
+        
+        const popUpText3 = document.createElement('p');
+        popUpText3.innerHTML = c;
+
+    popupDivText.appendChild(popUpText1);
+    popupDivText.appendChild(popUpText2);
+    popupDivText.appendChild(popUpText3);
+
+    // Creation btns no/yes du popup
+    const popUpDivBtns = document.createElement('div');
+    popUpDivBtns.classList.add('winBtns');
+
+        const popUpBtnNo = document.createElement('button');
+        popUpBtnNo.innerHTML = d;
+        popUpBtnNo.addEventListener('click', () => {
+
+            exitLevel();
+
+            clock.classList.toggle('disabled'); // Cache: body
+            playBtn.classList.toggle('disabled'); // Affiche: body
+            leMain.classList.toggle('disabled'); // Cache: body
+        })
+
+        const popUpBtnYes = document.createElement('button');
+        popUpBtnYes.innerHTML = e;
+        popUpBtnYes.addEventListener('click', () => {
+
+            exitLevel();
+
+            // Modify [levelNumber] before start new game or new level (f == 0 || f == levelNumber++)
+            levelNumber = f;
+            levelGenerator(LEVELS_LIST[levelNumber]);
+
+            g; // (g == rien || g == resetGameTimer())
+            startGameTimer();
+
+            startTimerLevel();
+        })
+
+    popUpDivBtns.appendChild(popUpBtnNo);
+    popUpDivBtns.appendChild(popUpBtnYes);
+
+    // popUpText1 + victoryBtns => popUp => <aside>
+    const popUp = document.createElement('div');
+    popUp.classList.add('winPopUp');
+    popUp.appendChild(popupDivText);
+    popUp.appendChild(popUpDivBtns);
+    aside.appendChild(popUp);
+}
 
 
-// Click Event Listener => call function [levelGenerator()]
+// ----------------------------------------------------------------
+//                    CLICK EVENT LISTENER
+// ----------------------------------------------------------------
+
+// ------- PLAYBTN clickEvent -------
 playBtn.addEventListener('click', () => {
     
-    playBtn.classList.toggle('disabled');
-    clock.classList.toggle('disabled');
+    playBtn.classList.toggle('disabled'); // Cache: playBtn
+    clock.classList.toggle('disabled'); // Affiche: clock
+    leMain.classList.toggle('disabled'); // Affiche: body
+    
     
     // Reset [levelNumber] before start new game
     levelNumber = 0;
-    levelGenerator(LEVEL_LIST[levelNumber]);
+    levelGenerator(LEVELS_LIST[levelNumber]);
  
+    // RESET and START gameTimming and levelTimming before start new game
     resetGameTimer();
     startGameTimer();
 
-    startTimerLevel();
+    startTimerLevel(); // (Le reset est comprit dans la function)
 });
-
-
-// -------------------------------------------
-//            function WIN POPUP
-// -------------------------------------------
-function creationWinPopUp() {
-    // Creation text du popup 
-    const divWinText = document.createElement('div');
-
-        const winTextTime = document.createElement('p');
-        const winText = document.createElement('p');
-        winTextTime.innerHTML = `well done you passed level ${levelNumber + 1} in ${14 - seconds}:${99 - tens} seconds`;
-        winText.innerHTML = `ready for level ${levelNumber + 2} ?`;
-
-    divWinText.appendChild(winTextTime);
-    divWinText.appendChild(winText);
-
-    // Creation btns no/yes du popup
-    const divWinBtns = document.createElement('div');
-    divWinBtns.classList.add('winBtns');
-
-        const winBtnNo = document.createElement('button');
-        winBtnNo.innerHTML = `not today`;
-        winBtnNo.addEventListener('click', () => {
-
-            exitLevel();
-
-            clock.classList.toggle('disabled');
-            playBtn.classList.toggle('disabled');
-        })
-
-        const winBtnYes = document.createElement('button');
-        winBtnYes.innerHTML = `YES !`;
-        winBtnYes.addEventListener('click', () => {
-
-            exitLevel();
-
-            levelNumber++;
-            levelGenerator(LEVEL_LIST[levelNumber]);
-
-            startTimerLevel();
-            startGameTimer();
-        })
-
-    divWinBtns.appendChild(winBtnNo);
-    divWinBtns.appendChild(winBtnYes);
-
-    // winText + winBtns => divPopUp => <aside>
-    const divPopUp = document.createElement('div');
-    divPopUp.classList.add('winPopUp');
-    divPopUp.appendChild(divWinText);
-    divPopUp.appendChild(divWinBtns);
-    aside.appendChild(divPopUp);
-}
-
-
-// ------------------------------------------
-//          function ENDGAME POPUP
-// ------------------------------------------
-function endGamePopUp(a, b, c, d){
-
-    // Creation text du popup 
-    const divVictoryText = document.createElement('div');
-
-        const victoryText = document.createElement('p');
-        victoryText.innerHTML = a;
-
-        const victoryTextTime = document.createElement('p');
-        victoryTextTime.innerHTML = b;
-        
-        const victoryTextTimeGame = document.createElement('p');
-        victoryTextTimeGame.innerHTML = c;
-
-    divVictoryText.appendChild(victoryText);
-    divVictoryText.appendChild(victoryTextTime);
-    divVictoryText.appendChild(victoryTextTimeGame);
-
-    // Creation btns no/yes du popup
-    const divVictoryBtns = document.createElement('div');
-    divVictoryBtns.classList.add('winBtns');
-
-        const victoryBtnNo = document.createElement('button');
-        victoryBtnNo.innerHTML = `exit game`;
-        victoryBtnNo.addEventListener('click', () => {
-
-            exitLevel();
-
-            clock.classList.toggle('disabled');
-            playBtn.classList.toggle('disabled');
-        })
-
-        const victoryBtnYes = document.createElement('button');
-        victoryBtnYes.innerHTML = d;
-        victoryBtnYes.addEventListener('click', () => {
-
-            exitLevel();
-
-            // Reset [levelNumber] before start new game
-            levelNumber = 0;
-            levelGenerator(LEVEL_LIST[levelNumber]);
-
-            resetGameTimer();
-            startGameTimer();
-
-            startTimerLevel();
-        })
-
-    divVictoryBtns.appendChild(victoryBtnNo);
-    divVictoryBtns.appendChild(victoryBtnYes);
-
-    // victoryText + victoryBtns => victoryPopUp => <aside>
-    const victoryPopUp = document.createElement('div');
-    victoryPopUp.classList.add('winPopUp');
-    victoryPopUp.appendChild(divVictoryText);
-    victoryPopUp.appendChild(divVictoryBtns);
-    aside.appendChild(victoryPopUp);
-}

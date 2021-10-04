@@ -17,7 +17,7 @@ body {
   justify-content: center;
 }
 
-/* hide start-btn and clock with toggle js */
+/* hide <start-btn>, <clock>, <body> with toggle js */
 .disabled {
   width: 0;
   overflow: hidden;
