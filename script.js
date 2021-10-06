@@ -1,4 +1,4 @@
-// Creation <main>
+// Selection <main>
 const leMain = document.querySelector('main');
 
 // Creation <aside>
@@ -16,7 +16,7 @@ aside.appendChild(clock);
 document.body.insertBefore(aside, document.body.children[0]);
 
 
-// levels list 
+// levels list
 const LEVELS_LIST = [LEVEL_1, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_5];
 
 // Set current level number for get him in the [LEVELS_LIST] array
@@ -70,7 +70,7 @@ function levelGenerator() {
     // ------ KEYDOWN EVENT -------
     document.addEventListener('keydown', (e) => { 
         
-        // Get ID of de current square -> transform this string into a number -> add the number of column in the maze-grid for target the next row in the grid
+        // Get ID of the current square -> transform this string into a number -> add the number of column in the maze-grid for target the next row in the grid
         let squareIdNumber = Number(player1.parentElement.getAttribute('id'));
         let squareUpId = squareIdNumber - LEVELS_LIST[levelNumber][0].length;
         let squareDownId = squareIdNumber + LEVELS_LIST[levelNumber][0].length;
@@ -218,7 +218,7 @@ function gamePopUp(a, b, c, d, e, f, g) {
     popUpDivBtns.appendChild(popUpBtnNo);
     popUpDivBtns.appendChild(popUpBtnYes);
 
-    // popUpText1 + victoryBtns => popUp => <aside>
+    // popUpDivText + popUpDivBtns => popUp => <aside>
     const popUp = document.createElement('div');
     popUp.classList.add('winPopUp');
     popUp.appendChild(popupDivText);
